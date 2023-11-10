@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import L from "leaflet";
+import L, { icon } from "leaflet";
 import "leaflet/dist/leaflet.css"
 import "./App.css"
+import axios from "axios";
 
 var watchId,stopwatch;
 export default function App() {
@@ -14,9 +15,20 @@ export default function App() {
 
   const [isTracking, setIsTracking] = useState(null)
   const [totalDistance, setTotalDistance] = useState(0)
+  const defaultIcon = new L.icon({
+    iconUrl: require('../node_modules/leaflet/dist/images/marker-icon.png'),
+  });
+
+  // const getGeoLocation = (lat,lng) => {
+  //   axios.get("https://api.mapbox.com/geocoding/v5/mapbox.places/"+lat+","+lng+".json?access_token=pk.eyJ1IjoidHJhdmVsb3JlIiwiYSI6ImNrYWd2OGduaDBhaXQycnFidjI5OHRtZW0ifQ.gHyo-vBUSPqAUsTB77uUvQ").then(response=>{
+  //     console.log(lat,lng)
+  //   })
+  // }
+
   const constructMap = () => {
 
     let coords = latLong.map(ll => [ll.latitude, ll.longitude])
+    // getGeoLocation(coords[0][0],coords[0][1])
     var container = L.DomUtil.get("map");
 
     if (container != null) {
@@ -26,6 +38,17 @@ export default function App() {
       coords[coords.length - 1][0],
       coords[coords.length - 1][1]
     ], 16);
+
+    L.marker(coords[0],{icon:defaultIcon}).addTo(map)
+    .bindPopup("Starting Point")
+    .openPopup();
+    
+    
+    L.marker(coords[coords.length-1],{icon:defaultIcon}).addTo(map)
+    .bindPopup('Ending Point')
+    .openPopup();
+
+
     L.tileLayer(
       "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}",
       {
@@ -36,7 +59,7 @@ export default function App() {
         tileSize: 512,
         zoomOffset: -1,
         accessToken:
-          "pk.eyJ1IjoidGFyLWhlbCIsImEiOiJjbDJnYWRieGMwMTlrM2luenIzMzZwbGJ2In0.RQRMAJqClc4qoNwROT8Umg",
+          "pk.eyJ1IjoidHJhdmVsb3JlIiwiYSI6ImNrYWd2OGduaDBhaXQycnFidjI5OHRtZW0ifQ.gHyo-vBUSPqAUsTB77uUvQ",
       }
     ).addTo(map);
 
