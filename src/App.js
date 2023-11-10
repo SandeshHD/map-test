@@ -2,10 +2,12 @@ import React, { useEffect, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css"
 import "./App.css"
+
+var watchId;
 export default function App() {
   const [latLong, setLatLong] = useState([])
   const [isTracking, setIsTracking] = useState(null)
-  var watchId;
+  const [totalDistance, setTotalDistance] = useState(0)
   const constructMap = () => {
 
     let coords = latLong.map(ll => [ll.latitude, ll.longitude])
@@ -67,6 +69,7 @@ export default function App() {
     setIsTracking(false)
     navigator.geolocation.clearWatch(watchId);
     constructMap()
+    calculateTotalDistance()
   }
 
   const calculateDistance = (coord1, coord2) => {
@@ -91,7 +94,7 @@ export default function App() {
       const currentCoord = latLong[i];
       distance += calculateDistance(prevCoord, currentCoord);
     }
-    return distance;
+    setTotalDistance(distance)
   };
 
   const deg2rad = (deg) => {
@@ -101,11 +104,11 @@ export default function App() {
   return (
     <div className="container">
       <div className="btn-container">
-        <button className="btn" onClick={startTracking}>Start</button>
+        <button className="btn" onClick={startTracking} disabled={isTracking}>Start</button>
         <button className="btn" onClick={stopTracking} disabled={!isTracking}>Stop</button>
       </div>
       <div className="info">
-        {isTracking ? 'Tracking...' : isTracking != null ? 'Distance Travelled: ' + calculateTotalDistance() + 'kms' : ''}
+        {isTracking ? 'Tracking...' : isTracking != null ? 'Distance Travelled: ' + totalDistance + 'kms' : ''}
       </div>
       <div id="map"></div>
     </div>
