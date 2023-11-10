@@ -12,7 +12,10 @@ height: 100%;
 .btn-container{
   display: flex;
   justify-content: space-around;
-  margin:40px;
+  margin: 40px 0;
+  position: fixed;
+  z-index: 1000;
+  width: 100%;
 }
 
 .btn{
@@ -21,4 +24,5 @@ height: 100%;
   height: 100px;
   width: 100px;
   border-radius: 5px;
+  cursor: pointer;
 }
