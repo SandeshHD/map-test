@@ -12,17 +12,18 @@ height: 100%;
 .btn-container{
   display: flex;
   justify-content: space-around;
-  margin: 40px 0;
-  position: fixed;
-  z-index: 1000;
+  margin: 30px 0 0;
   width: 100%;
 }
 
 .btn{
   padding:10px 24px;
   border:1px solid #c9c9c9;
-  height: 100px;
-  width: 100px;
   border-radius: 5px;
   cursor: pointer;
+}
+
+.info{
+  text-align: center;
+  margin:20px auto;
 }
