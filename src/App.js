@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css"
-
+import "./App.css"
+var timer;
 export default function App() {
   const [latLong,setLatLong] = useState([])
-  const [timer,setTimer] = useState()
   const constructMap = () => {
 
     let coords = latLong.map(ll => [ll.latitude,ll.longitude])
@@ -13,9 +13,6 @@ export default function App() {
     if (container != null) {
       container._leaflet_id = null;
     }
-
-    console.log(coords[coords.length-1][0],
-      coords[coords.length-1][1])
     var map = L.map("map").setView([
       coords[coords.length-1][0],
       coords[coords.length-1][1]
@@ -37,24 +34,20 @@ export default function App() {
   var polyline = L.polyline(coords, {color: 'blue'}).addTo(map);
   
   // zoom the map to the polyline
-  // map.fitBounds(polyline.getBounds());
+  map.fitBounds(polyline.getBounds());
   }
 
   function getLocation() {
     if (navigator.geolocation) {
         navigator.geolocation.watchPosition(
-            // Success function
             updatePosition, 
-            // Error function
             null, 
-            // Options. See MDN for details.
             {
                enableHighAccuracy: true,
                timeout: 5000,
                maximumAge: 0
             });
     } else { 
-        // x.innerHTML = "Geolocation is not supported by this browser.";
     }
 }
 const updatePosition = (position) => {
@@ -63,12 +56,15 @@ const updatePosition = (position) => {
 })
 }
 
+useEffect(()=>{
+  getLocation()
+},[])
+
 
   const startTracking = ()=>{
-    let interval = setInterval(()=>{
+    timer = setInterval(()=>{
       getLocation()
-    },1000) 
-    setTimer(interval)
+    },30000) 
   }
   
   const stopTracking = ()=>{
@@ -80,10 +76,12 @@ const updatePosition = (position) => {
   
 
   return (
-    <>
-      <button onClick={startTracking}>Start</button>
-      <button onClick={stopTracking}>Stop</button>
-      <div id="map" style={{ height: "100vh" }}></div>
-    </>
+    <div className="container">
+    <div className="btn-container">
+      <button className="btn" onClick={startTracking}>Start</button>
+      <button className="btn" onClick={stopTracking}>Stop</button>
+    </div>
+      <div id="map"></div>
+    </div>
   );
 }

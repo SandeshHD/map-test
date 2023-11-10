@@ -1,1 +1,24 @@
-#map { height: 180px; }
+.container{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100vh;
+}
+
+#map {
+height: 100%;
+}
+
+.btn-container{
+  display: flex;
+  justify-content: space-around;
+  margin:40px;
+}
+
+.btn{
+  padding:10px 24px;
+  border:1px solid #c9c9c9;
+  height: 100px;
+  width: 100px;
+  border-radius: 5px;
+}
