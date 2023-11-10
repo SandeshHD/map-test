@@ -3,9 +3,15 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css"
 import "./App.css"
 
-var watchId;
+var watchId,stopwatch;
 export default function App() {
   const [latLong, setLatLong] = useState([])
+  const [time, setTime] = useState({
+    seconds: 0,
+    minutes:0,
+    hours: 0
+  })
+
   const [isTracking, setIsTracking] = useState(null)
   const [totalDistance, setTotalDistance] = useState(0)
   const constructMap = () => {
@@ -60,12 +66,42 @@ export default function App() {
   }
   
   const startTracking = () => {
+    setTime({
+      seconds:0,
+      minutes:0,
+      hours:0
+    })
+    stopwatch = setInterval(() => {
+      setTime((previous)=>{
+        let seconds = previous.seconds
+        let hours = previous.hours
+        let minutes = previous.minutes
+        seconds+=1
+        if(seconds === 60){
+          minutes+=1;
+          seconds = 0;
+        }
+
+        if(minutes === 60){
+          hours+=1;
+          minutes = 0
+        }
+
+        return {
+          seconds,
+          minutes,
+          hours
+        }
+      })
+    },1000)
+
     setLatLong([])
     getLocation()
     setIsTracking(true)
   }
 
   const stopTracking = () => {
+    clearInterval(stopwatch)
     setIsTracking(false)
     navigator.geolocation.clearWatch(watchId);
     constructMap()
@@ -105,6 +141,7 @@ export default function App() {
     <div className="container">
       <div className="btn-container">
         <button className="btn" onClick={startTracking} disabled={isTracking}>Start</button>
+        <div>{(time.hours<10?"0"+time.hours:time.hours) + " : " + (time.minutes<10?"0"+time.minutes:time.minutes) + " : " + (time.seconds<10?"0"+time.seconds:time.seconds)}</div>
         <button className="btn" onClick={stopTracking} disabled={!isTracking}>Stop</button>
       </div>
       <div className="info">
