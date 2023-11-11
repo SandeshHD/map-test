@@ -14,21 +14,26 @@ export default function App() {
   })
 
   const [isTracking, setIsTracking] = useState(null)
+  const [sourceLocation, setSourceLocation] = useState(null)
+  const [destinationLocation, setDestinationLocation] = useState(null)
   const [totalDistance, setTotalDistance] = useState(0)
   const defaultIcon = new L.icon({
     iconUrl: require('../node_modules/leaflet/dist/images/marker-icon.png'),
   });
 
-  // const getGeoLocation = (lat,lng) => {
-  //   axios.get("https://api.mapbox.com/geocoding/v5/mapbox.places/"+lat+","+lng+".json?access_token=pk.eyJ1IjoidHJhdmVsb3JlIiwiYSI6ImNrYWd2OGduaDBhaXQycnFidjI5OHRtZW0ifQ.gHyo-vBUSPqAUsTB77uUvQ").then(response=>{
-  //     console.log(lat,lng)
-  //   })
-  // }
+  const getGeoLocation = (lat,lng,isSource=false) => {
+    axios.get("https://nominatim.openstreetmap.org/reverse?lat="+lat+"&lon="+lng+"&format=json").then(response=>{
+      if(isSource)
+        setSourceLocation(response.data.display_name)
+      else
+        setDestinationLocation(response.data.display_name)
+    })
+  }
 
   const constructMap = () => {
-
     let coords = latLong.map(ll => [ll.latitude, ll.longitude])
-    // getGeoLocation(coords[0][0],coords[0][1])
+    getGeoLocation(coords[0][0],coords[0][1],true)
+    getGeoLocation(coords[coords.length - 1][0],coords[coords.length - 1][1])
     var container = L.DomUtil.get("map");
 
     if (container != null) {
@@ -168,7 +173,9 @@ export default function App() {
         <button className="btn" onClick={stopTracking} disabled={!isTracking}>Stop</button>
       </div>
       <div className="info">
-        {isTracking ? 'Tracking...' : isTracking != null ? 'Distance Travelled: ' + totalDistance + 'kms' : ''}
+        {isTracking ? 'Tracking...' : isTracking != null ? 'Distance Travelled: ' + totalDistance + ' kms' : ''}<br/>
+        {sourceLocation?"Start Location:"+sourceLocation:''}<br/>
+        {destinationLocation?"Destination Location:"+destinationLocation:''}
       </div>
       <div id="map"></div>
     </div>
