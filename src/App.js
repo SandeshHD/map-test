@@ -94,6 +94,8 @@ export default function App() {
   }
   
   const startTracking = () => {
+    setSourceLocation(null)
+    setDestinationLocation(null)
     setTime({
       seconds:0,
       minutes:0,
@@ -173,9 +175,12 @@ export default function App() {
         <button className="btn" onClick={stopTracking} disabled={!isTracking}>Stop</button>
       </div>
       <div className="info">
-        {isTracking ? 'Tracking...' : isTracking != null ? 'Distance Travelled: ' + totalDistance + ' kms' : ''}<br/>
-        {sourceLocation?"Start Location:"+sourceLocation:''}<br/>
-        {destinationLocation?"Destination Location:"+destinationLocation:''}
+        {isTracking ? 'Tracking...':''}
+        {isTracking!=null && sourceLocation && destinationLocation ? <div>
+          Distance Travelled: {totalDistance} kms<br/>
+          Start Location: {sourceLocation}<br/>
+          Destination Location: {destinationLocation}<br/>
+        </div>:isTracking === false?'Analyzing...':''}
       </div>
       <div id="map"></div>
     </div>
