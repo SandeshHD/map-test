@@ -160,7 +160,7 @@ export default function App() {
       const currentCoord = latLong[i];
       distance += calculateDistance(prevCoord, currentCoord);
     }
-    setTotalDistance(distance)
+    setTotalDistance(Math.round(distance))
   };
 
   const deg2rad = (deg) => {
